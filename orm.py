@@ -13,6 +13,7 @@ def from_xlsx_to_bd(file, model):
         df = pd.read_excel(file)
         df.to_sql(name='users', con=conn, if_exists='append', index=False)
         print(f'импорт {file} в {model} завершён')
+    del_user_without_role()
 
 
 def add_users(data):
@@ -30,6 +31,7 @@ def add_users(data):
         print(df)
         df.to_sql(name='users', con=conn, if_exists='append', index=False)
     print(f'импорт {data} в {User} завершён')
+    del_user_without_role()
 
 
 def add_number(data, date_request, role):
@@ -243,29 +245,43 @@ def get_users(org_id='', login=False, name=True):
     return users
 
 
+def del_user_without_role():
+    u = User.select().where(User.roles == None)
+    for i in u.dicts().execute():
+        print(f'отсутствуют роли \n{i}')
+    print(f'удалено {User.delete().where(User.roles == None).execute()} записей пользователей')
+
+
+
 if __name__ == '__main__':
     # from_xlsx_to_bd('users.xlsx', User)
     # add_users('users.xlsx')
-    u = get_users('72.044')
+    # u = get_users('72.044')
     # role = 'PKURP_REG'
     # make_orders(role=role, dateFrom='2023-03-01', dateTo='2023-03-10', u)
     # make_orders(role=role, dateFrom='2023-03-01', dateTo='2023-03-10', users=u, status='Приостановление обработки')
-    d = User.get(User.logins == 'animirvoda').org_id
-    print(d)
+    # d = User.get(User.logins == 'animirvoda').org_id
+    # print(d)
 
-    info = get_info('Ляхова Елена Александровна', date_from='2023-03-01', date_to='2023-03-01', status='Приостановление обработки')
+    # info = get_info('PKURP_REG', 'Ляхова Елена Александровна', date_from='2023-03-01', date_to='2023-03-01', status='Приостановление обработки')
     # print(info)
     # info = get_info('Бетехтина Людмила Викторовна', date_from='2023-03-09', date_to='2023-03-09', status='Приостановление обработки')
-    make_xlsx(info)
+    # make_xlsx(info)
     # info =r = Packet.select()
     # print(len(info))
     # for i in info.dicts().execute():
     #     print(i)
     # u = get_users('72.044')
-    print(u)
+    # print(u)
     # r = PacketReg.select().where(PacketReg.status == )
 
     # u = User.select().where(User.org_id == '72.044')
     # for i in u.dicts().execute():
     #     print(i['logins'])
     #     print(i['fio'])
+    # r = User.get(User.logins == 'avpoletneva').roles
+    # print(r)
+    # if r == None:
+    #     print('N')
+    del_user_without_role()
+
