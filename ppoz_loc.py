@@ -5,7 +5,8 @@ from tkcalendar import Calendar, DateEntry
 import os.path
 import configparser
 import orm
-from functions import distr_json, get_users_from_department
+from functions import get_users_from_department
+from myfunctions import distr_json
 from orm import get_users
 from tkinter import filedialog
 
